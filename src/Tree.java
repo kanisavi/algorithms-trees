@@ -74,25 +74,21 @@ public class Tree {
 
     @Override
     public String toString() {
-        String[] leftLines = (left != null ? left.toString() : "").split("\n");
-        String[] rightLines = (right != null ? right.toString() : "").split("\n");
+        StringBuilder sb = new StringBuilder();
+        appendInOrder(sb);
+        return sb.toString();
+    }
 
-        int maxLeftSize = Arrays.stream(leftLines)
-                .map(String::length)
-                .max(Comparator.naturalOrder())
-                .orElse(0);
-
-        List<String> lines = new ArrayList<>();
-        lines.add(" ".repeat(maxLeftSize + 1) + name);
-        for (int i = 0; i < Math.max(leftLines.length, rightLines.length); i++) {
-            String prefix = i < leftLines.length ? leftLines[i] : "";
-            lines.add(
-                    prefix +
-                            " ".repeat(maxLeftSize + name.length() + 1 * 2 - prefix.length()) +
-                            (i < rightLines.length ? rightLines[i] : "")
-            );
+    // обход в порядке "узел(левое, правое)"
+    private void appendInOrder(StringBuilder sb) {
+        sb.append(name);
+        if (left == null && right == null) {
+            return;
         }
-
-        return lines.stream().collect(Collectors.joining("\n"));
+        sb.append('(');
+        if (left != null) left.appendInOrder(sb);
+        sb.append(", ");
+        if (right != null) right.appendInOrder(sb);
+        sb.append(')');
     }
 }
